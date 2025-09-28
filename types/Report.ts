@@ -12,7 +12,10 @@ export type ReportObject = {
 }
 
 type Report = {
-    id: number;
+    id: string;
     date: string;
+    imageFile: string | undefined;
     objects: ReportObject[];
 }
+
+export default Report;

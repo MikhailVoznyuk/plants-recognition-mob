@@ -1,6 +1,6 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
-import { Text, View, ScrollView, StyleSheet, ImageBackground } from "react-native";
+import { Text, ScrollView, StyleSheet} from "react-native";
 
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 
@@ -9,38 +9,56 @@ import ImageProvider from "@/components/ImageProvider/ImageProvider";
 import LoadedContainer from "@/components/LoadedContainer/LoadedContainer";
 
 import MainBackground from "@/ui/MainBackground/MainBackground";
+import LoadingBlock from "@/components/loadingBlock/LoadingBlock";
 import Button from "@/ui/Button/Button";
 
+import process from '@/lib/model/process'
+
 import type PickedImage from "@/types/PickedImage";
+
 
 export default function Index() {
     const [curTab, setCurTab] = useState<number>(0);
     const [images, setImages] = useState<PickedImage[]>([]);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-
+    const [reportsCounter, setReportsCounter]  = useState([images.length, 0])
     const insets = useSafeAreaInsets();
 
     const submit = () => {
+        process({images, reportsCounter, setReportsCounter})
         setIsSubmitted(true);
+        console.log('done')
     }
+
+    useEffect(() => {
+        if (isSubmitted && (reportsCounter[0] === reportsCounter[1])) {
+            setImages([]);
+            setReportsCounter([images.length, 0]);
+            setIsSubmitted(false);
+        }
+    }, [isSubmitted, reportsCounter]);
 
   return (
 
       <MainBackground>
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.contentContainer, {paddingBottom: insets.bottom + 100}]}>
-              <ToggleBar callback={setCurTab}></ToggleBar>
-              <ImageProvider images={images} setImages={setImages} inputType={curTab}/>
-              {(images.length > 0) ?
-                  <LoadedContainer images={images} setImages={setImages}/>
-                  : null
-              }
-              {(images.length > 0) ?
-                  <Button style={styles.button} callback={submit}>
-                      <Text style={styles.buttonText}>Начать анализ</Text>
-                  </Button> :
-                  null
-              }
-          </ScrollView>
+          {!isSubmitted ?
+              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.contentContainer, {paddingBottom: insets.bottom + 100}]}>
+                  <ToggleBar callback={setCurTab}></ToggleBar>
+                  <ImageProvider images={images} setImages={setImages} inputType={curTab}/>
+                  {(images.length > 0) ?
+                      <LoadedContainer images={images} setImages={setImages}/>
+                      : null
+                  }
+                  {(images.length > 0) ?
+                      <Button style={styles.button} callback={submit}>
+                          <Text style={styles.buttonText}>Начать анализ</Text>
+                      </Button> :
+                      null
+                  }
+              </ScrollView>
+              : <LoadingBlock reportsCounter={reportsCounter}/>
+          }
+
       </MainBackground>
 
   );
