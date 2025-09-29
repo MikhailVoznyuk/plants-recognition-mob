@@ -72,10 +72,10 @@ export default function Layout() {
                     <TabTrigger disabled={curTab === 0} onPress={() => onClick(0)} style={styles.tab} name='index'  href='/'>
                         <Animated.Text style={[styles.tabText, {color: colorFst}]}>Анализ</Animated.Text>
                     </TabTrigger>
-                    <TabTrigger disabled={curTab === 1} onPress={() => onClick(1)} style={styles.tab} name='reports' href='/reports'>
+                    <TabTrigger  disabled={curTab === 1} onPress={() => onClick(1)} style={styles.tab} name='reports' href='/reports'>
                         <Animated.Text style={[styles.tabText, {color: colorSnd}]}>Отчеты</Animated.Text>
                     </TabTrigger>
-                    <TabTrigger disabled={curTab === 2} onPress={() => onClick(2)} style={styles.tab} name='about'  href='/about'>
+                    <TabTrigger  disabled={curTab === 2} onPress={() => onClick(2)} style={styles.tab} name='about'  href='/about'>
                         <Animated.Text style={[styles.tabText, {color: colorThd}]}>Инфо</Animated.Text>
                     </TabTrigger>
 
