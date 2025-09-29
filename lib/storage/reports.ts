@@ -18,6 +18,16 @@ export async function getAllReports(): Promise<Report[]> {
     }
 }
 
+export async function getReport(reportId: string) {
+    const reports = await getAllReports();
+    for (let report of reports) {
+        if (report.id === reportId) {
+            return report;
+        }
+    }
+    return null;
+}
+
 export async function saveReport(report: Report): Promise<boolean> {
     const reports: Report[] = await getAllReports();
     reports.push(report);

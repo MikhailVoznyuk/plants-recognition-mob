@@ -12,7 +12,8 @@ type ToggleBarProps = {
 const POS = [
     {x: 0, width: 120},
     {x: 140, width: 140}
-]
+];
+
 const DUR = 440;
 
 const INTERPOLATE = {

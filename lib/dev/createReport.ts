@@ -1,4 +1,4 @@
-import * as crypto from "node:crypto";
+import uuid from 'react-native-uuid';
 
 import type Report  from "@/types/Report";
 import type {ReportObject} from "@/types/Report";
@@ -47,9 +47,9 @@ export default async function createReport(image: PickedImage): Promise<Report> 
     })
 
     return {
-        id: crypto.randomUUID(),
+        id: uuid.v4(),
         date: strDate,
-        imageFile: image.filename,
+        imageFile: image.path,
         objects: objects,
     }
 

@@ -13,6 +13,7 @@ import LoadingBlock from "@/components/loadingBlock/LoadingBlock";
 import Button from "@/ui/Button/Button";
 
 import process from '@/lib/model/process'
+//import clearStorage from "@/lib/dev/clearStorage";
 
 import type PickedImage from "@/types/PickedImage";
 
@@ -21,17 +22,25 @@ export default function Index() {
     const [curTab, setCurTab] = useState<number>(0);
     const [images, setImages] = useState<PickedImage[]>([]);
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-    const [reportsCounter, setReportsCounter]  = useState([images.length, 0])
+    const [reportsCounter, setReportsCounter]  = useState([0, 0])
     const insets = useSafeAreaInsets();
 
-    const submit = () => {
-        process({images, reportsCounter, setReportsCounter})
+    const submit = async () => {
         setIsSubmitted(true);
+
+        let ind = 0;
+        while (ind < images.length) {
+            await process(images[ind]);
+
+            setReportsCounter([reportsCounter[0], ind + 1]);
+            ind++;
+        }
         console.log('done')
     }
 
     useEffect(() => {
         if (isSubmitted && (reportsCounter[0] === reportsCounter[1])) {
+            console.log('useEffect fires')
             setImages([]);
             setReportsCounter([images.length, 0]);
             setIsSubmitted(false);
@@ -44,7 +53,7 @@ export default function Index() {
           {!isSubmitted ?
               <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.contentContainer, {paddingBottom: insets.bottom + 100}]}>
                   <ToggleBar callback={setCurTab}></ToggleBar>
-                  <ImageProvider images={images} setImages={setImages} inputType={curTab}/>
+                  <ImageProvider images={images} setImages={setImages} inputType={curTab} reportsCounter={reportsCounter} setReportsCounter={setReportsCounter}/>
                   {(images.length > 0) ?
                       <LoadedContainer images={images} setImages={setImages}/>
                       : null

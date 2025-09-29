@@ -1,10 +1,11 @@
 import React from "react";
-import {View, ViewProps, StyleSheet} from 'react-native';
+import {View, ViewProps, StyleSheet, Animated} from 'react-native';
 import BlurLayer from "@/ui/BlurContainer/BlurLayer";
 
 type GlassContainerProps = {
     style?: ViewProps['style'],
     contentContainerStyle?: ViewProps['style'],
+    animate?: boolean,
     children: React.ReactNode
 }
 
@@ -13,9 +14,16 @@ export default function GlassContainer({children, ...props}: GlassContainerProps
     return (
         <View style={[styles.glassContainer, styles.elevation, props.style ?? null]}>
             <BlurLayer/>
-            <View style={[styles.contentContainer, props.contentContainerStyle ?? null]}>
-                {children}
-            </View>
+            {props.animate ?
+                <Animated.View style={[styles.contentContainer, props.contentContainerStyle ?? null]}>
+                    {children}
+                </Animated.View>
+                :
+                <View style={[styles.contentContainer, props.contentContainerStyle ?? null]}>
+                    {children}
+                </View>
+            }
+
         </View>
 
     )

@@ -10,12 +10,14 @@ import type PickedImage from "@/types/PickedImage";
 
 
 type ImageProviderProps = {
-    inputType: number,
-    images: PickedImage[],
-    setImages: React.Dispatch<React.SetStateAction<PickedImage[]>>
+    inputType: number;
+    images: PickedImage[];
+    setImages: React.Dispatch<React.SetStateAction<PickedImage[]>>;
+    reportsCounter: number[];
+    setReportsCounter: React.Dispatch<React.SetStateAction<number[]>>
 }
 
-export default function ImageProvider({inputType, images, setImages}: ImageProviderProps) {
+export default function ImageProvider({inputType, images, setImages, setReportsCounter}: ImageProviderProps) {
     const blockContent = [
         {
             textLabel: 'Выберите фотографии с изображением растения из вашей галлереи.',
@@ -35,7 +37,9 @@ export default function ImageProvider({inputType, images, setImages}: ImageProvi
                     mediaType: 'photo',
                     multiple: true
                 })
-                setImages(images.concat(result))
+                const newImagesArr = images.concat(result);
+                setImages(newImagesArr);
+                setReportsCounter([newImagesArr.length, 0])
             } catch (error) {
                 console.log('Input cancelled');
             }
@@ -45,7 +49,9 @@ export default function ImageProvider({inputType, images, setImages}: ImageProvi
                 result =  await ImagePicker.openCamera({
                     mediaType: 'photo'
                 });
-                setImages(images.concat([result]))
+                const newImagesArr = images.concat([result]);
+                setImages(newImagesArr);
+                setReportsCounter([newImagesArr.length, 0])
             } catch (error) {
 
                 console.log(error);

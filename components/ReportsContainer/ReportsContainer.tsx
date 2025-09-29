@@ -5,12 +5,12 @@ import ReportPreview from "@/components/ReportPreview/ReportPreview";
 
 import type Report from "@/types/Report";
 
-export default function ReportContainer({reports}: {reports: Report[]}) {
+export default function ReportsContainer({reports}: {reports: Report[]}) {
     const insets = useSafeAreaInsets();
     return (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.reportsContainer, {paddingBottom: insets.bottom + 100}]}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[styles.reportsContainer, {paddingTop: insets.top + 40, paddingBottom: insets.bottom + 100}]}>
             {reports.map((report) => (
-                <ReportPreview key={report.id}/>
+                <ReportPreview key={report.id} reportData={report} />
             ))}
         </ScrollView>
     )
@@ -21,6 +21,6 @@ const styles = StyleSheet.create({
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        gap: 10
+        gap: 16
     }
 })
