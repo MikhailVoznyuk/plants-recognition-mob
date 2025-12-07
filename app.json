@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "plants-recognition-app",
-    "slug": "tree-recognition-app",
+    "slug": "plant-recognition-main",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -50,8 +50,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "5042f9d3-5886-448c-ad79-f674375945cb"
-      }
+        "projectId": "6de1ef74-5018-47ef-b6ff-4cbd14490c50"
+      },
+      "API_BASE": "https://labs.timacad.ru/treehealth"
     },
     "owner": "0scure"
   }

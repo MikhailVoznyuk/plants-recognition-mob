@@ -1,98 +1,61 @@
-import react from 'react';
 
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Image } from 'expo-image';
+import { Link } from 'expo-router';
+import GlassContainer from '@/ui/GlassContainer/GlassContainer';
+import type { Report } from '@/types/Report';
 
-import {View, Text, StyleSheet} from 'react-native';
-import {Image} from "expo-image";
-import {Link} from "expo-router";
+export default function ReportPreview({ reportData }: { reportData: Report }) {
+  const plants = reportData.payload?.plants ?? [];
+  const defects = reportData.payload?.defects ?? [];
+  const grades = plants.map(p => (p.health_grade || '').toLowerCase());
+  const good = grades.filter(g => g === 'good').length;
+  const med  = grades.filter(g => g === 'medium' || g === 'ok').length;
+  const bad  = grades.filter(g => g === 'bad' || g === 'poor').length;
 
-import GlassContainer from "@/ui/GlassContainer/GlassContainer";
-import Button from "@/ui/Button/Button";
+  return (
+    <GlassContainer style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <View style={styles.head}>
 
-import type Report from "@/types/Report";
-
-export default function ReportPreview({reportData}: {reportData: Report}) {
-
-    return (
-        <GlassContainer style={styles.container} contentContainerStyle={styles.contentContainer}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>{`Отчет - ${reportData.id.slice(0, 5)}`}</Text>
-            </View>
-            <View style={styles.content}>
-                <Image style={styles.contentImage}  source={reportData.imageFile} />
-                <View style={styles.textContainer}>
-                    <Text style={styles.contentText}>{`Дата: ${reportData.date}`}</Text>
-                    <Text style={styles.contentText}>{`Объектов на фото: ${reportData.objects.length}`}</Text>
-                </View>
-            </View>
-                <Link  style={styles.button} href={{pathname: '/reports/[id]', params: {id: reportData.id}}}>Открыть</Link>
-        </GlassContainer>
-    )
+        <Text style={styles.request}>Отчет: {(reportData.payload.request_id.slice(0,8) + ((reportData.payload.request_id.length > 8) ? '…' : ''))}</Text>
+        <Text style={styles.status}>{reportData.payload.status}</Text>
+        <Text style={styles.date}>{new Date(reportData.date).toLocaleString()}</Text>
+      </View>
+      <View style={styles.main}>
+        <Image source={{ uri: reportData.imageFile }} style={styles.image} contentFit="cover" />
+        <View style={styles.summary}>
+          <View style={styles.row}><Text style={styles.label}>Обнар. растения:</Text><Text style={styles.value}>{plants.length}</Text></View>
+          <View style={styles.row}><Text style={styles.label}>Обнар. дефекты</Text><Text style={styles.value}>{defects.length}</Text></View>
+          {
+            /*
+            <View style={styles.row}><Text style={[styles.label, styles.ok]}>good</Text><Text style={[styles.value, styles.ok]}>{good}</Text></View>
+            <View style={styles.row}><Text style={[styles.label, styles.warn]}>medium</Text><Text style={[styles.value, styles.warn]}>{med}</Text></View>
+            <View style={styles.row}><Text style={[styles.label, styles.bad]}>bad</Text><Text style={[styles.value, styles.bad]}>{bad}</Text></View>
+             */
+          }
+        </View>
+      </View>
+      <Link href={{ pathname: '/reports/[id]', params: { id: reportData.id } }} style={styles.open}>Открыть</Link>
+    </GlassContainer>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width: 320,
-        height: 150,
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        paddingVertical: 0,
-    },
-    contentContainer: {
-        height: 150,
-
-        position: "relative",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        padding: 0,
-        paddingVertical: 0,
-
-    },
-    header: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        backgroundColor: '#03C317',
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 0,
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 20,
-    },
-    headerText: {
-        color: "#FFF",
-        fontSize: 18,
-    },
-    contentImage: {
-        width: 112,
-        height: 70,
-        borderRadius: 10
-    },
-    contentText: {
-        width: 174,
-        justifyContent: 'flex-start',
-    },
-    content: {
-        width: 320,
-        marginTop: 44,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 0,
-        paddingHorizontal: 10
-    },
-    textContainer: {
-
-    },
-    button: {
-        position: "absolute",
-        bottom: 10,
-        right: 10,
-        backgroundColor: '#03C317',
-        paddingHorizontal: 14,
-        paddingVertical: 6,
-        color: '#FFF',
-        fontSize: 20,
-        borderRadius: 20
-    }
-
-})
+  container: { width: '92%', justifyContent: 'flex-start' },
+  contentContainer: { padding: 12, gap: 10, paddingBottom: 20 },
+  head: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, alignItems: 'center', justifyContent: 'space-between' },
+  status: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8,  backgroundColor: 'rgba(0,200,100,0.18)' },
+  request: { backgroundColor: '#03C317', color: '#FFF', paddingHorizontal: 8, fontSize: 16, fontWeight: 'bold', borderRadius: 14, paddingVertical: 4,  opacity: 1, fontFamily: 'Courier' },
+  date: { opacity: 0.8 },
+  main: { flexDirection: 'row', gap: 12, alignItems: 'stretch' },
+  image: { width: 160, height: 110, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  summary: { flex: 1, gap: 6, justifyContent: 'flex-start' },
+  row: { flexDirection: 'row', justifyContent: 'space-between' },
+  label: { opacity: 0.7 },
+  value: { fontWeight: '700' },
+  ok: { color: '#00c864' },
+  warn: { color: '#ffc200' },
+  bad: { color: '#ff3654' },
+  open: { position: 'absolute', right: 12, bottom: 16, paddingHorizontal: 14, paddingVertical: 6, backgroundColor: '#03C317', borderRadius: 20, color: '#fff', overflow: 'hidden' },
+});
