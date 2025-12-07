@@ -311,12 +311,10 @@ function pickOverlayUrl(base: string, payload: ServerResponse): string | null {
   const id = any?.request_id;
   if (!id) return null;
 
-  // Новый формат: явный URL
   if (any?.overlay?.mode === 'url' && typeof any.overlay?.value === 'string') {
     return any.overlay.value;
   }
 
-  // Иначе строим URL вида artifacts/<id>/overlay.<ext>
   const srcPath =
       (any?.overlay?.value as string | undefined) ||
       (any?.extras?.overlay_url as string | undefined) ||
